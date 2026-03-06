@@ -1,12 +1,12 @@
-package uidt.master.ecommerce.service;
+package uidt.master.ecommerce.Authentification.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import uidt.master.ecommerce.entity.User;
-import uidt.master.ecommerce.enumeration.Role;
-import uidt.master.ecommerce.repository.UserRepository;
+import uidt.master.ecommerce.Authentification.entity.User;
+import uidt.master.ecommerce.Authentification.enumeration.Role;
+import uidt.master.ecommerce.Authentification.repository.UserRepository;
 
 @Service
 @AllArgsConstructor
@@ -16,9 +16,6 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public String save(User user) {
-        if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            return "Invalid email format";
-        }
         User existingUser = findByEmail(user.getEmail());
         if (existingUser != null) {
             return "Email already in use";

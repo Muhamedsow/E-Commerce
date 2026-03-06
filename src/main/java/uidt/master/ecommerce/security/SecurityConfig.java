@@ -6,12 +6,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import uidt.master.ecommerce.repository.UserRepository;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import uidt.master.ecommerce.Authentification.repository.UserRepository;
+import uidt.master.ecommerce.Authentification.token.JWTUtil;
+import uidt.master.ecommerce.Authentification.token.JWTUtilFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -20,14 +24,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login","/register").permitAll()
+                        .requestMatchers("/user/login","/user/register","/user/logout","/user/refresh").permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+                .addFilterBefore(new JWTUtilFilter(new JWTUtil(), userDetailsService(null)), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

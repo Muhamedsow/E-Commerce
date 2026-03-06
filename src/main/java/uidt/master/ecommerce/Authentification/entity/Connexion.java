@@ -1,4 +1,4 @@
-package uidt.master.ecommerce.entity;
+package uidt.master.ecommerce.Authentification.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
